@@ -11,8 +11,9 @@ int main(void) {
     short lenghtOfMotif; // K
     short numberOfSequences; // N
     short lenghtOfSequences; // L
-    short backgroundProbability[4];
-    short backgroundSum[4] = {0, 0, 0, 0} //{a, c, g, t}
+    float backgroundProbabilitys[4];
+    short backgroundSum = 0;
+    short backgroundSums[4] = {0, 0, 0, 0}; //{a, c, g, t}
 
     // Creates the inputString for the files in the .../Input/ Directory.
     printf("What is the name of the input file?\n");
@@ -38,29 +39,36 @@ int main(void) {
         printf("There are no value at the beginning of the file!\n\n");
         exit(1);
     }
+
     char lastChar;
-    sequence actualSequence[numberOfSequences];
-    char actualSequenceString[lenghtOfSequences];
+    sequence actualSequences[numberOfSequences];
+    char actualSequenceStrings[lenghtOfSequences];
 
     for(c1 = 0; c1 < numberOfSequences; c1++) {
         for(c2 = 0; c2 < lenghtOfSequences - 1; c2++) {
-            returnValue = fscanf(input, "%c", &actualSequenceString[c2]);
+            returnValue = fscanf(input, "%c", &actualSequenceStrings[c2]);
             if(returnValue <= 0) {
                 printf("There are to less Sequences in you file, only %hd!\n\n", c1);
                 exit(1);
             }
-            if(actualSequenceString[c2] == '\n') {
+            if(actualSequenceStrings[c2] == '\n') {
                 printf("The sequence %hd is too short!\n\n", c1 + 1);
                 exit(1);
             }
-            switch(actualSequenceString[c2]) {
-                case 'a':   backgroundSum[0]++;
+            switch(actualSequenceStrings[c2]) {
+                case 'A':
+                case 'a':   backgroundSums[0]++;
                             break;
-                case 'c':   backgroundSum[1]++;
+                case 'C':
+                case 'c':   backgroundSums[1]++;
                             break;
-                case 'g':   backgroundSum[2]++;
+                case 'G':
+                case 'g':   backgroundSums[2]++;
                             break;
-                case 't':   backgroundSum[3]++;
+                case 'T':
+                case 't':   backgroundSums[3]++;
+                            break;
+                default:    printf("There are false letters in your %hd Sequence, column %hd!\n\n", c1 + 1, c2 + 1);
                             break;
             }
         }
@@ -69,14 +77,20 @@ int main(void) {
             printf("The sequence %hd is too long!\n\n", c1 + 1);
             exit(1);
         }
-        actualSequence[c1].sequenceContent = actualSequenceString;
-        actualSequence[c1].motifStart = -1;
+        actualSequences[c1].sequenceContent = actualSequenceStrings;
+        actualSequences[c1].motifStart = -1;
     }
+    for(c1 = 0; c1 < 4; c1++)
+        backgroundSum += backgroundSums[c1];
+    for(c1 = 0; c1 < 4; c1++)
+        backgroundProbabilitys[c1] = backgroundSums[c1] / backgroundSum;
+
 
     actualSet.lenghtOfMotif = lenghtOfMotif;
     actualSet.lenghtOfSequences = lenghtOfSequences;
     actualSet.numberOfSequences = numberOfSequences;
-    actualSet.setOfSequenes = actualSequence;
+    actualSet.setOfSequenes = actualSequences;
+    actualSet.backgroundProbability = backgroundProbabilitys;
 
     return 0;
 }

@@ -12,7 +12,7 @@ typedef struct sequences {
 } sequence;
 
 typedef struct traingingSets {
-    short backgroundProbability[4]; // {a, c, g, t}
+    float* backgroundProbability; // {a, c, g, t}
     short lenghtOfMotif; // K
     short numberOfSequences; // N
     short lenghtOfSequences; // L
