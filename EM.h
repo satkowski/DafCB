@@ -8,6 +8,7 @@
 
 typedef struct sequences {
     char* sequenceContent;
+    short* numberOfLetter; // {a, c, g, t}
     short motifStart;
 } sequence;
 
