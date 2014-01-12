@@ -8,16 +8,16 @@
 
 typedef struct sequences {
     char* sequenceContent;
-    short* numberOfLetter; // {a, c, g, t}
     short motifStart;
 } sequence;
 
 typedef struct traingingSets {
     float* backgroundProbability; // {a, c, g, t}
+    float* positionalWeightMatrix; // {{A, ... L},{C, ... L} ...}
     short lenghtOfMotif; // K
     short numberOfSequences; // N
     short lenghtOfSequences; // L
-    sequence* setOfSequenes;
+    sequence* setOfSequenes; // size of N
 } trainingSet;
 
 #endif

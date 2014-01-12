@@ -43,10 +43,14 @@ int main(void) {
     char lastChar;
     sequence actualSequences[numberOfSequences];
     char actualSequenceStrings[lenghtOfSequences];
+    float positionalWeightMatrix[lenghtOfSequences][4];
+    for(c1 = 0; c1 < lenghtOfSequences; c1++) {
+        for(c2 = 0; c2 < 4; c2++)
+            positionalWeightMatrix[c1][c2] = 0;
+    }
 
     for(c1 = 0; c1 < numberOfSequences; c1++) {
         for(c2 = 0; c2 < lenghtOfSequences - 1; c2++) {
-            short numberOfLetters[4] = {0, 0, 0, 0};
             returnValue = fscanf(input, "%c", &actualSequenceStrings[c2]);
             if(returnValue <= 0) {
                 printf("There are to less Sequences in you file, only %hd!\n\n", c1);
@@ -59,19 +63,19 @@ int main(void) {
             switch(actualSequenceStrings[c2]) {
                 case 'A':
                 case 'a':   backgroundSums[0]++;
-                            numberOfLetters[0]++;
+                            positionalWeightMatrix[c2][0]++;
                             break;
                 case 'C':
                 case 'c':   backgroundSums[1]++;
-                            numberOfLetters[1]++;
+                            positionalWeightMatrix[c2][1]++;
                             break;
                 case 'G':
                 case 'g':   backgroundSums[2]++;
-                            numberOfLetters[2]++;
+                            positionalWeightMatrix[c2][2]++;
                             break;
                 case 'T':
                 case 't':   backgroundSums[3]++;
-                            numberOfLetters[3]++;
+                            positionalWeightMatrix[c2][3]++;
                             break;
                 default:    printf("There are false letters in your %hd Sequence, column %hd!\n\n", c1 + 1, c2 + 1);
                             break;
@@ -83,7 +87,6 @@ int main(void) {
             exit(1);
         }
         actualSequences[c1].sequenceContent = actualSequenceStrings;
-        actualSequences[c1].numberOfLetter = numberOfLetters;
         actualSequences[c1].motifStart = -1;
     }
     for(c1 = 0; c1 < 4; c1++)
@@ -97,6 +100,7 @@ int main(void) {
     actualSet.numberOfSequences = numberOfSequences;
     actualSet.setOfSequenes = actualSequences;
     actualSet.backgroundProbability = backgroundProbabilitys;
+    actualSet.positionalWeightMatrix = positionalWeightMatrix;
 
     return 0;
 }
