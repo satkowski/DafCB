@@ -1,8 +1,9 @@
 #include "EM.h"
+#include "EM1.h"
 
 int main(void) {
     short returnValue;
-    short c1, c2;
+    short c1, c2, c3;
 
     char fileName[32];
     char inputString[38] = "Input/";
@@ -11,9 +12,6 @@ int main(void) {
     short lenghtOfMotif; // K
     short numberOfSequences; // N
     short lenghtOfSequences; // L
-    float backgroundProbabilitys[4];
-    short backgroundSum = 0;
-    short backgroundSums[4] = {0, 0, 0, 0}; //{a, c, g, t}
 
     // Creates the inputString for the files in the .../Input/ Directory.
     printf("What is the name of the input file?\n");
@@ -40,18 +38,16 @@ int main(void) {
         exit(1);
     }
 
+    float backgroundProbabilitys[4];
+    short backgroundSum = 0;
+    short backgroundSums[4] = {0, 0, 0, 0}; //{a, c, g, t}
+    short backgroundFrequency[lenghtOfSequences][4];
     char lastChar;
     sequence actualSequences[numberOfSequences];
     char actualSequenceStrings[lenghtOfSequences];
-    double pwm[lenghtOfSequences][4];
-    double actualSpace;
-    for(c1 = 0; c1 < lenghtOfSequences; c1++) {
-        for(c2 = 0; c2 < 4; c2++)
-            pwm[c1][c2] = 0;
-    }
 
     for(c1 = 0; c1 < numberOfSequences; c1++) {
-        for(c2 = 0; c2 < lenghtOfSequences - 1; c2++) {
+        for(c2 = 0; c2 < lenghtOfSequences; c2++) {
             returnValue = fscanf(input, "%c", &actualSequenceStrings[c2]);
             if(returnValue <= 0) {
                 printf("There are to less Sequences in you file, only %hd!\n\n", c1);
@@ -61,22 +57,24 @@ int main(void) {
                 printf("The sequence %hd is too short!\n\n", c1 + 1);
                 exit(1);
             }
+            for(c3 = 0; c3 < 4; c3++)
+                backgroundFrequency[c2][c3] = 0;
             switch(actualSequenceStrings[c2]) {
-                case 'A':
+                case 'A':   actualSequenceStrings[c2] = 'a';
                 case 'a':   backgroundSums[0]++;
-                            pwm[c2][0]++;
+                            backgroundFrequency[c2][0]++;
                             break;
-                case 'C':
+                case 'C':   actualSequenceStrings[c2] = 'c';
                 case 'c':   backgroundSums[1]++;
-                            pwm[c2][1]++;
+                            backgroundFrequency[c2][1]++;
                             break;
-                case 'G':
+                case 'G':   actualSequenceStrings[c2] = 'g';
                 case 'g':   backgroundSums[2]++;
-                            pwm[c2][2]++;
+                            backgroundFrequency[c2][2]++;
                             break;
-                case 'T':
+                case 'T':   actualSequenceStrings[c2] = 't';
                 case 't':   backgroundSums[3]++;
-                            pwm[c2][3]++;
+                            backgroundFrequency[c2][3]++;
                             break;
                 default:    printf("There are false letters in your %hd Sequence, column %hd!\n\n", c1 + 1, c2 + 1);
                             break;
@@ -88,32 +86,20 @@ int main(void) {
             exit(1);
         }
         actualSequences[c1].sequenceContent = actualSequenceStrings;
-        actualSequences[c1].motifStart = -1;
     }
     for(c1 = 0; c1 < 4; c1++)
         backgroundSum += backgroundSums[c1];
     for(c1 = 0; c1 < 4; c1++)
         backgroundProbabilitys[c1] = (float) backgroundSums[c1] / (float) backgroundSum;
 
-    for(c1 = 0; c1 < lenghtOfSequences - 1; c1++) {
-        for(c2 = 0; c2 < 4; c2++) {
-            actualSpace = pwm[c1][c2];
-            // pic = fic / N
-            actualSpace /= numberOfSequences;
-            // pic / pc
-            actualSpace = actualSpace / backgroundProbabilitys[c2];
-            // log ( pic / pc)
-            actualSpace = log10(actualSpace);
-            pwm[c1][c2] = actualSpace;
-        }
-    }
-
     actualSet.lenghtOfMotif = lenghtOfMotif;
     actualSet.lenghtOfSequences = lenghtOfSequences;
     actualSet.numberOfSequences = numberOfSequences;
     actualSet.setOfSequenes = actualSequences;
     actualSet.backgroundProbability = backgroundProbabilitys;
-    actualSet.positionalWeightMatrix = pwm;
+    actualSet.backgroundFrequency = backgroundFrequency[];
+
+    positionalWeightMatrix(&actualSet);
 
     return 0;
 }

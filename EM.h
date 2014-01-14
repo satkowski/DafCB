@@ -7,14 +7,19 @@
 #ifndef EM_STRUCT
 #define EM_STRUCT
 
+typedef struct motifs {
+    short start;
+    double** positionalWeightMatrix; // {{A, ... L},{C, ... L} ...};
+} motif;
+
 typedef struct sequences {
     char* sequenceContent;
-    short motifStart;
+    motif* allMotifs;
 } sequence;
 
 typedef struct traingingSets {
     float* backgroundProbability; // {a, c, g, t}
-    double** positionalWeightMatrix; // {{A, ... L},{C, ... L} ...}
+    short* backgroundFrequency[4];
     short lenghtOfMotif; // K
     short numberOfSequences; // N
     short lenghtOfSequences; // L
