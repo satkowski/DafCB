@@ -19,7 +19,7 @@ typedef struct sequences {
 
 typedef struct traingingSets {
     float* backgroundProbability; // {a, c, g, t}
-    short* backgroundFrequency[4];
+    short** backgroundFrequency;
     short lenghtOfMotif; // K
     short numberOfSequences; // N
     short lenghtOfSequences; // L
