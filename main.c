@@ -97,7 +97,7 @@ int main(void) {
     actualSet.numberOfSequences = numberOfSequences;
     actualSet.setOfSequenes = actualSequences;
     actualSet.backgroundProbability = backgroundProbabilitys;
-    actualSet.backgroundFrequency = backgroundFrequency[];
+    actualSet.backgroundFrequency = backgroundFrequency;
 
     positionalWeightMatrix(&actualSet);
 
