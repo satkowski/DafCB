@@ -43,10 +43,11 @@ int main(void) {
     char lastChar;
     sequence actualSequences[numberOfSequences];
     char actualSequenceStrings[lenghtOfSequences];
-    float positionalWeightMatrix[lenghtOfSequences][4];
+    double pwm[lenghtOfSequences][4];
+    double actualSpace;
     for(c1 = 0; c1 < lenghtOfSequences; c1++) {
         for(c2 = 0; c2 < 4; c2++)
-            positionalWeightMatrix[c1][c2] = 0;
+            pwm[c1][c2] = 0;
     }
 
     for(c1 = 0; c1 < numberOfSequences; c1++) {
@@ -63,19 +64,19 @@ int main(void) {
             switch(actualSequenceStrings[c2]) {
                 case 'A':
                 case 'a':   backgroundSums[0]++;
-                            positionalWeightMatrix[c2][0]++;
+                            pwm[c2][0]++;
                             break;
                 case 'C':
                 case 'c':   backgroundSums[1]++;
-                            positionalWeightMatrix[c2][1]++;
+                            pwm[c2][1]++;
                             break;
                 case 'G':
                 case 'g':   backgroundSums[2]++;
-                            positionalWeightMatrix[c2][2]++;
+                            pwm[c2][2]++;
                             break;
                 case 'T':
                 case 't':   backgroundSums[3]++;
-                            positionalWeightMatrix[c2][3]++;
+                            pwm[c2][3]++;
                             break;
                 default:    printf("There are false letters in your %hd Sequence, column %hd!\n\n", c1 + 1, c2 + 1);
                             break;
@@ -92,15 +93,27 @@ int main(void) {
     for(c1 = 0; c1 < 4; c1++)
         backgroundSum += backgroundSums[c1];
     for(c1 = 0; c1 < 4; c1++)
-        backgroundProbabilitys[c1] = backgroundSums[c1] / backgroundSum;
+        backgroundProbabilitys[c1] = (float) backgroundSums[c1] / (float) backgroundSum;
 
+    for(c1 = 0; c1 < lenghtOfSequences - 1; c1++) {
+        for(c2 = 0; c2 < 4; c2++) {
+            actualSpace = pwm[c1][c2];
+            // pic = fic / N
+            actualSpace /= numberOfSequences;
+            // pic / pc
+            actualSpace = actualSpace / backgroundProbabilitys[c2];
+            // log ( pic / pc)
+            actualSpace = log10(actualSpace);
+            pwm[c1][c2] = actualSpace;
+        }
+    }
 
     actualSet.lenghtOfMotif = lenghtOfMotif;
     actualSet.lenghtOfSequences = lenghtOfSequences;
     actualSet.numberOfSequences = numberOfSequences;
     actualSet.setOfSequenes = actualSequences;
     actualSet.backgroundProbability = backgroundProbabilitys;
-    actualSet.positionalWeightMatrix = positionalWeightMatrix;
+    actualSet.positionalWeightMatrix = pwm;
 
     return 0;
 }

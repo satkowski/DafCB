@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 #ifndef EM_STRUCT
 #define EM_STRUCT
@@ -13,7 +14,7 @@ typedef struct sequences {
 
 typedef struct traingingSets {
     float* backgroundProbability; // {a, c, g, t}
-    float* positionalWeightMatrix; // {{A, ... L},{C, ... L} ...}
+    double** positionalWeightMatrix; // {{A, ... L},{C, ... L} ...}
     short lenghtOfMotif; // K
     short numberOfSequences; // N
     short lenghtOfSequences; // L
